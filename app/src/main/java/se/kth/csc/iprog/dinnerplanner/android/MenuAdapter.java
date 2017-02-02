@@ -1,22 +1,21 @@
 package se.kth.csc.iprog.dinnerplanner.android;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.app.Dialog;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
+import java.util.HashSet;
 import java.util.Set;
 
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
@@ -31,6 +30,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout item;
+        public Dish dish;
         public ViewHolder(LinearLayout v) {
             super(v);
             item = v;
@@ -43,6 +43,24 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         }
     }
 
+    private Set<Dish> getSelected() {
+        Set<Dish> res = new HashSet<>();
+        for(Object o : dataset) {
+            Dish v = (Dish) o;
+            if(v.selected)
+                res.add(v);
+        }
+        return res;
+    }
+
+    private int countSelected() {
+        int sum = 0;
+        Set<Dish> v = getSelected();
+        for(Dish c : v)
+            sum += c.getCost();
+        return sum;
+    }
+
     public MenuAdapter(Activity activity, Object[] dataset) {
         this.dataset = dataset;
         this.activity = activity;
@@ -50,19 +68,65 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     public MenuAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_item, parent, false);
-
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Dish dish = (Dish) dataset[position];
+        final Dish dish = (Dish) dataset[position];
+        holder.dish = dish;
         holder.getTextView().setText( dish.getName() );
         holder.getImageView().setImageResource( dish.getImageId() );
+
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!holder.dish.selected) {
+
+                    final Dialog dialog = new Dialog(activity);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.chose_menu_dialog);
+
+                    Spinner s = (Spinner) activity.findViewById(R.id.participants);
+                    final int participants = s.getSelectedItemPosition() + 1;
+
+                    TextView costView = (TextView) activity.findViewById(R.id.cost);
+                    String costString = costView.getText().toString();
+                    final int totCost = Integer.parseInt(costString.subSequence(0, costString.length() - 2).toString());
+
+                    ((TextView) dialog.findViewById(R.id.item_title)).setText(
+                            "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
+                    );
+                    ((ImageView) dialog.findViewById(R.id.item_image)).setImageResource( dish.getImageId() );
+
+                    dialog.findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Mark item
+                            holder.item.setBackgroundColor(Color.parseColor("#ff574a"));
+                            holder.getTextView().setTextColor(Color.parseColor("#ffffff"));
+                            holder.dish.selected = true;
+                            TextView t = (TextView) activity.findViewById(R.id.cost);
+
+                            t.setText( "" + (totCost + participants * dish.getCost()) + "kr" );
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+                else {
+                    // Mark item
+                    // holder.item.setBackgroundColor(Color.parseColor("#ffffff"));
+                    // holder.getTextView().setTextColor(Color.parseColor("#000000"));
+                    // holder.dish.selected = false;
+                }
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)

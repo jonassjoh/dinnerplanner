@@ -14,6 +14,7 @@ public class Dish {
 	String image;
 	int imageId;
 	String description;
+	public boolean selected = false;
 	
 	Set<Ingredient> ingredients = new HashSet<Ingredient>();
 	
@@ -49,7 +50,15 @@ public class Dish {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	public int getCost() {
+		int sum = 0;
+		Set<Ingredient> ingredients = getIngredients();
+		for(Ingredient i : ingredients)
+			sum += i.getPrice();
+		return sum;
+	}
+
 	public Set<Ingredient> getIngredients(){
 		return ingredients;
 	}

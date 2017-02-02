@@ -3,8 +3,10 @@ package se.kth.csc.iprog.dinnerplanner.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import se.kth.csc.iprog.dinnerplanner.android.R;
+
 public class DinnerModel implements IDinnerModel{
-	
+
 
     float totalCost = 0;
 	int numOfGuests = 0;
@@ -22,7 +24,7 @@ public class DinnerModel implements IDinnerModel{
 	public DinnerModel(){
 		
 		//Adding some example data, you can add more
-		Dish dish1 = new Dish("French toast",Dish.STARTER,"toast.jpg","In a large mixing bowl, beat the eggs. Add the milk, brown sugar and nutmeg; stir well to combine. Soak bread slices in the egg mixture until saturated. Heat a lightly oiled griddle or frying pan over medium high heat. Brown slices on both sides, sprinkle with cinnamon and serve hot.");
+		Dish dish1 = new Dish(R.drawable.toast, "French toast",Dish.STARTER,"toast.jpg","In a large mixing bowl, beat the eggs. Add the milk, brown sugar and nutmeg; stir well to combine. Soak bread slices in the egg mixture until saturated. Heat a lightly oiled griddle or frying pan over medium high heat. Brown slices on both sides, sprinkle with cinnamon and serve hot.");
 		Ingredient dish1ing1 = new Ingredient("eggs",0.5,"",1);
 		Ingredient dish1ing2 = new Ingredient("milk",30,"ml",6);
 		Ingredient dish1ing3 = new Ingredient("brown sugar",7,"g",1);
@@ -34,8 +36,8 @@ public class DinnerModel implements IDinnerModel{
 		dish1.addIngredient(dish1ing4);
 		dish1.addIngredient(dish1ing5);
 		dishes.add(dish1);
-		
-		Dish dish2 = new Dish("Meat balls",Dish.MAIN,"meatballs.jpg","Preheat an oven to 400 degrees F (200 degrees C). Place the beef into a mixing bowl, and season with salt, onion, garlic salt, Italian seasoning, oregano, red pepper flakes, hot pepper sauce, and Worcestershire sauce; mix well. Add the milk, Parmesan cheese, and bread crumbs. Mix until evenly blended, then form into 1 1/2-inch meatballs, and place onto a baking sheet. Bake in the preheated oven until no longer pink in the center, 20 to 25 minutes.");
+
+		Dish dish2 = new Dish(R.drawable.meatballs, "Meat balls",Dish.STARTER,"meatballs.jpg","Preheat an oven to 400 degrees F (200 degrees C). Place the beef into a mixing bowl, and season with salt, onion, garlic salt, Italian seasoning, oregano, red pepper flakes, hot pepper sauce, and Worcestershire sauce; mix well. Add the milk, Parmesan cheese, and bread crumbs. Mix until evenly blended, then form into 1 1/2-inch meatballs, and place onto a baking sheet. Bake in the preheated oven until no longer pink in the center, 20 to 25 minutes.");
 		Ingredient dish2ing1 = new Ingredient("extra lean ground beef",115,"g",20);
 		Ingredient dish2ing2 = new Ingredient("sea salt",0.7,"g",3);
 		Ingredient dish2ing3 = new Ingredient("small onion, diced",0.25,"",2);

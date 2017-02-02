@@ -2,6 +2,7 @@ package se.kth.csc.iprog.dinnerplanner.android;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +22,14 @@ public class MainActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setContentView(R.layout.chose_menu);
+                next();
             }
         });
+    }
+
+    private void next() {
+        Intent intent = new Intent(this, MenuActivity.class);
+        startActivity(intent);
     }
 
 }

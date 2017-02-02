@@ -12,14 +12,16 @@ public class Dish {
 	String name;
 	int type; // starter (1), main (2) or desert (3)  
 	String image;
+	int imageId;
 	String description;
 	
 	Set<Ingredient> ingredients = new HashSet<Ingredient>();
 	
-	public Dish(String name, int type, String image, String description) {
+	public Dish(int imageId, String name, int type, String image, String description) {
 		this.name = name;
 		this.type = type;
 		this.image = image;
+		this.imageId = imageId;
 		this.description = description;
 	}
 	
@@ -72,4 +74,7 @@ public class Dish {
 		return false;
 	}
 
+	public int getImageId() {
+		return imageId;
+	}
 }

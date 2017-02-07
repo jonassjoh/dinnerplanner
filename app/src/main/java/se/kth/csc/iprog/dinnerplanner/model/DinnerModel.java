@@ -144,6 +144,21 @@ public class DinnerModel implements IDinnerModel{
 		return result;
 	}
 
+	/**
+	 * Returns the selected item
+	 * @param type
+     * @return
+     */
+	public Set<Dish> getSelected(){
+		Set<Dish> result = new HashSet<Dish>();
+		for(Dish d : dishes){
+			if(d.selected){
+				result.add(d);
+			}
+		}
+		return result;
+	}
+
 
 	@Override
 	public int getNumberOfGuests() {

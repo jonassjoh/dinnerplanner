@@ -3,4 +3,24 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:text="placeholder1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/course_type"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:text="placeholder2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/course_title"
+        android:textStyle="italic"/>
+
+
+    <TextView
+        android:text="placeholder3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inst"/>
 </LinearLayout>

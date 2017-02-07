@@ -40,7 +40,8 @@
 
         <include layout="@layout/menu_item"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/overview_item"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/instructions"

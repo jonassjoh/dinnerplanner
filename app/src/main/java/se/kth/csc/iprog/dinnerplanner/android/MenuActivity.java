@@ -2,6 +2,7 @@ package se.kth.csc.iprog.dinnerplanner.android;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -84,7 +85,9 @@ public class MenuActivity extends Activity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setContentView(R.layout.activity_main);
+                Intent intent = new Intent(MenuActivity.this, OverviewActivity.class);
+                startActivity(intent);
+
             }
         });
     }
@@ -97,5 +100,8 @@ public class MenuActivity extends Activity {
     }
     private Object[] getDeserts() {
         return model.getDishesOfType(Dish.DESERT).toArray();
+    }
+    private Object[] getSelected() {
+        return model.getSelected().toArray();
     }
 }

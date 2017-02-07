@@ -16,5 +16,7 @@
     <string name="main_course">Main Course</string>
     <string name="dessert">Dessert</string>
     <string name="create">Create</string>
+    <string name="inst">Instructions</string>
+    <string name="ingredients">Ingredients</string>
 
 </resources>

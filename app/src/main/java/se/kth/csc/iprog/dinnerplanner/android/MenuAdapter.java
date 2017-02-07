@@ -85,48 +85,52 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!holder.dish.selected) {
-
-                    final Dialog dialog = new Dialog(activity);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.chose_menu_dialog);
-
-                    Spinner s = (Spinner) activity.findViewById(R.id.participants);
-                    final int participants = s.getSelectedItemPosition() + 1;
-
-                    TextView costView = (TextView) activity.findViewById(R.id.cost);
-                    String costString = costView.getText().toString();
-                    final int totCost = Integer.parseInt(costString.subSequence(0, costString.length() - 2).toString());
-
-                    ((TextView) dialog.findViewById(R.id.item_title)).setText(
-                            "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
-                    );
-                    ((ImageView) dialog.findViewById(R.id.item_image)).setImageResource( dish.getImageId() );
-
-                    dialog.findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Mark item
-                            holder.item.setBackgroundColor(Color.parseColor("#ff574a"));
-                            holder.getTextView().setTextColor(Color.parseColor("#ffffff"));
-                            holder.dish.selected = true;
-                            TextView t = (TextView) activity.findViewById(R.id.cost);
-
-                            t.setText( "" + (totCost + participants * dish.getCost()) + "kr" );
-                            dialog.dismiss();
-                        }
-                    });
-
-                    dialog.show();
-                }
-                else {
-                    // Mark item
-                    // holder.item.setBackgroundColor(Color.parseColor("#ffffff"));
-                    // holder.getTextView().setTextColor(Color.parseColor("#000000"));
-                    // holder.dish.selected = false;
-                }
+                onClickImage(holder, dish);
             }
         });
+    }
+
+    protected void onClickImage(final ViewHolder holder, final Dish dish) {
+        if(!holder.dish.selected) {
+
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.chose_menu_dialog);
+
+            Spinner s = (Spinner) activity.findViewById(R.id.participants);
+            final int participants = s.getSelectedItemPosition() + 1;
+
+            TextView costView = (TextView) activity.findViewById(R.id.cost);
+            String costString = costView.getText().toString();
+            final int totCost = Integer.parseInt(costString.subSequence(0, costString.length() - 2).toString());
+
+            ((TextView) dialog.findViewById(R.id.item_title)).setText(
+                    "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
+            );
+            ((ImageView) dialog.findViewById(R.id.item_image)).setImageResource( dish.getImageId() );
+
+            dialog.findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Mark item
+                    holder.item.setBackgroundColor(Color.parseColor("#ff574a"));
+                    holder.getTextView().setTextColor(Color.parseColor("#ffffff"));
+                    holder.dish.selected = true;
+                    TextView t = (TextView) activity.findViewById(R.id.cost);
+
+                    t.setText( "" + (totCost + participants * dish.getCost()) + "kr" );
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        }
+        else {
+            // Mark item
+            // holder.item.setBackgroundColor(Color.parseColor("#ffffff"));
+            // holder.getTextView().setTextColor(Color.parseColor("#000000"));
+            // holder.dish.selected = false;
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

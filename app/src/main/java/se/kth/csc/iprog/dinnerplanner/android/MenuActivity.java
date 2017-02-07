@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Set;
 
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
@@ -32,12 +29,15 @@ public class MenuActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        model = ((DinnerPlannerApplication) this.getApplication()).getModel();
+
         setContentView(R.layout.chose_menu);
 
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getActionBar().setCustomView(R.layout.titlebar);
 
-        Spinner participants = (Spinner) findViewById(R.id.participants);
+        final Spinner participants = (Spinner) findViewById(R.id.participants);
         Integer[] guests = new Integer[] { 1,2,3,4,5,6,7,8,9,10,11 };
         ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, guests);
         participants.setAdapter(adapter);
@@ -50,7 +50,6 @@ public class MenuActivity extends Activity {
                 int totCost = Integer.parseInt(costString.subSequence(0, costString.length() - 2).toString());
                 totCost /= previous;
                 totCost *= (i+1);
-                Toast.makeText(getApplicationContext(), ""+totCost, Toast.LENGTH_SHORT).show();
                 costView.setText(totCost+"kr");
                 previous = i+1;
             }
@@ -60,8 +59,6 @@ public class MenuActivity extends Activity {
 
             }
         });
-
-        model = new DinnerModel();
 
         RecyclerView starters = (RecyclerView) findViewById(R.id.starters);
         RecyclerView mainCourses = (RecyclerView) findViewById(R.id.main_courses);
@@ -86,8 +83,13 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuActivity.this, OverviewActivity.class);
-                startActivity(intent);
+                TextView costView = (TextView) findViewById(R.id.cost);
+                String costString = costView.getText().toString();
 
+                intent.putExtra("cost", costString);
+                intent.putExtra("participants", previous);
+
+                startActivity(intent);
             }
         });
     }

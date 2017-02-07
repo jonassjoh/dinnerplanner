@@ -23,6 +23,9 @@ public class Ingredient {
 	public double getQuantity() {
 		return quantity;
 	}
+	public String getQuantityString() {
+		return String.format("%.2f", getQuantity());
+	}
 	public void setQuantity(double quantity) {
 		this.quantity = quantity;
 	}

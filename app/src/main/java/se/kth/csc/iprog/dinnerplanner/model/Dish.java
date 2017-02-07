@@ -25,6 +25,14 @@ public class Dish {
 		this.imageId = imageId;
 		this.description = description;
 	}
+
+	public String getTypeName() {
+		int type = getType();
+		if(type == STARTER) return "Starter";
+		if(type == MAIN) return "Main Course";
+		if(type == DESERT) return "Desert";
+		return "";
+	}
 	
 	public String getName() {
 		return name;

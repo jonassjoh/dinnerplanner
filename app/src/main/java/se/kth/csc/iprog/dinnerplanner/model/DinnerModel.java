@@ -183,13 +183,31 @@ public class DinnerModel implements IDinnerModel{
 	@Override
 	public Set<Ingredient> getAllIngredients() {
         Set<Ingredient> ingredients = new HashSet<Ingredient>();
+		Set<Ingredient> in = new HashSet<>();
+
+		for(Dish d : dishes) {
+			for(Ingredient i : d.getIngredients()) {
+				boolean has = false;
+				for(Ingredient k : in) {
+					if(k.getName().equals(i.getName())) {
+						k.setQuantity( k.getQuantity() + i.getQuantity() );
+						has = true;
+						break;
+					}
+				}
+				if(!has) {
+					in.add(i);
+				}
+			}
+		}
+
         for(Dish d : dishes) {
             for(Ingredient i : d.getIngredients()) {
                 ingredients.add(i);
             }
         }
 
-        return ingredients;
+        return in;
 	}
 
 	@Override

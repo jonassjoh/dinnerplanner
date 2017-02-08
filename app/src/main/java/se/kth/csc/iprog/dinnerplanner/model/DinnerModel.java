@@ -9,7 +9,7 @@ public class DinnerModel implements IDinnerModel{
 
 
     float totalCost = 0;
-	int numOfGuests = 0;
+	int numOfGuests = 1;
 	Set<Dish> dishes = new HashSet<Dish>();
 	/**
 	 * TODO: For Lab2 you need to implement the IDinnerModel interface.
@@ -146,7 +146,6 @@ public class DinnerModel implements IDinnerModel{
 
 	/**
 	 * Returns the selected item
-	 * @param type
      * @return
      */
 	public Set<Dish> getSelected(){
@@ -186,6 +185,7 @@ public class DinnerModel implements IDinnerModel{
 		Set<Ingredient> in = new HashSet<>();
 
 		for(Dish d : dishes) {
+			if(d.selected)
 			for(Ingredient i : d.getIngredients()) {
 				boolean has = false;
 				for(Ingredient k : in) {
@@ -212,7 +212,13 @@ public class DinnerModel implements IDinnerModel{
 
 	@Override
 	public float getTotalMenuPrice() {
-		return totalCost;
+		Set<Dish> selected = getSelected();
+		int sum = 0;
+		for (Dish d:selected
+			 ) {
+			sum += d.getCost();
+		}
+		return sum;
 	}
 
 	@Override

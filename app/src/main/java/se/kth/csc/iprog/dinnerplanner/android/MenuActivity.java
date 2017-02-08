@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
@@ -46,11 +45,8 @@ public class MenuActivity extends Activity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 TextView costView = (TextView) findViewById(R.id.cost);
-                String costString = costView.getText().toString();
-                int totCost = Integer.parseInt(costString.subSequence(0, costString.length() - 2).toString());
-                totCost /= previous;
-                totCost *= (i+1);
-                costView.setText(totCost+"kr");
+                model.setNumberOfGuests(i+1);
+                costView.setText(model.getTotalMenuPrice() * model.getNumberOfGuests() + "kr");
                 previous = i+1;
             }
 
@@ -102,8 +98,5 @@ public class MenuActivity extends Activity {
     }
     private Object[] getDeserts() {
         return model.getDishesOfType(Dish.DESERT).toArray();
-    }
-    private Object[] getSelected() {
-        return model.getSelected().toArray();
     }
 }

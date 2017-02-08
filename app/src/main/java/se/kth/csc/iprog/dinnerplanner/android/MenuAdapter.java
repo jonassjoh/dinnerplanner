@@ -18,6 +18,7 @@ import org.w3c.dom.Text;
 import java.util.HashSet;
 import java.util.Set;
 
+import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
 
 /**
@@ -100,9 +101,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             Spinner s = (Spinner) activity.findViewById(R.id.participants);
             final int participants = s.getSelectedItemPosition() + 1;
 
+            final DinnerModel model = ((DinnerPlannerApplication) activity.getApplication()).getModel();
+
             TextView costView = (TextView) activity.findViewById(R.id.cost);
             String costString = costView.getText().toString();
-            final int totCost = Integer.parseInt(costString.subSequence(0, costString.length() - 2).toString());
+            final int totCost = (int) model.getTotalMenuPrice();
 
             ((TextView) dialog.findViewById(R.id.item_title)).setText(
                     "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
@@ -118,7 +121,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                     holder.dish.selected = true;
                     TextView t = (TextView) activity.findViewById(R.id.cost);
 
-                    t.setText( "" + (totCost + participants * dish.getCost()) + "kr" );
+                    t.setText( "" + (model.getTotalMenuPrice() * model.getNumberOfGuests()) + "kr" );
                     dialog.dismiss();
                 }
             });

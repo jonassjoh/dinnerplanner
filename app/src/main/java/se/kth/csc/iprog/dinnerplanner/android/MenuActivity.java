@@ -19,7 +19,6 @@ import se.kth.csc.iprog.dinnerplanner.model.Dish;
 public class MenuActivity extends Activity {
 
     DinnerModel model;
-    int previous = 1;
 
     public MenuActivity() {
 
@@ -47,7 +46,6 @@ public class MenuActivity extends Activity {
                 TextView costView = (TextView) findViewById(R.id.cost);
                 model.setNumberOfGuests(i+1);
                 costView.setText(model.getTotalMenuPrice() * model.getNumberOfGuests() + "kr");
-                previous = i+1;
             }
 
             @Override
@@ -79,12 +77,6 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuActivity.this, OverviewActivity.class);
-                TextView costView = (TextView) findViewById(R.id.cost);
-                String costString = costView.getText().toString();
-
-                intent.putExtra("cost", costString);
-                intent.putExtra("participants", previous);
-
                 startActivity(intent);
             }
         });

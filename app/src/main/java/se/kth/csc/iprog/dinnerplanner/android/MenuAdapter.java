@@ -99,13 +99,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             dialog.setContentView(R.layout.chose_menu_dialog);
 
             Spinner s = (Spinner) activity.findViewById(R.id.participants);
-            final int participants = s.getSelectedItemPosition() + 1;
 
             final DinnerModel model = ((DinnerPlannerApplication) activity.getApplication()).getModel();
 
-            TextView costView = (TextView) activity.findViewById(R.id.cost);
-            String costString = costView.getText().toString();
-            final int totCost = (int) model.getTotalMenuPrice();
+            //final int participants = s.getSelectedItemPosition() + 1;
+            final int participants = model.getNumberOfGuests();
 
             ((TextView) dialog.findViewById(R.id.item_title)).setText(
                     "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"

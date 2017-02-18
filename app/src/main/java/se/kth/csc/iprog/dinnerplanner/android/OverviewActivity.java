@@ -39,9 +39,8 @@ public class OverviewActivity extends Activity {
         setContentView(R.layout.overview_view);
         model = ((DinnerPlannerApplication) this.getApplication()).getModel();
 
-        Intent intent = getIntent();
-        cost = intent.getStringExtra("cost");
-        participants = intent.getIntExtra("participants", 1);
+        cost = "" + model.getTotalMenuPrice();
+        participants = model.getNumberOfGuests();
 
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getActionBar().setCustomView(R.layout.titlebar);

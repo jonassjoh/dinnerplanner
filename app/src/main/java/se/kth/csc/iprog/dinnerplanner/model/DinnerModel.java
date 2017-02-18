@@ -214,8 +214,7 @@ public class DinnerModel implements IDinnerModel{
 	public float getTotalMenuPrice() {
 		Set<Dish> selected = getSelected();
 		int sum = 0;
-		for (Dish d:selected
-			 ) {
+		for (Dish d : selected) {
 			sum += d.getCost();
 		}
 		return sum;

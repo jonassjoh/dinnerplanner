@@ -1,9 +1,18 @@
 package se.kth.csc.iprog.dinnerplanner.model;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import se.kth.csc.iprog.dinnerplanner.android.R;
+import se.kth.csc.iprog.dinnerplanner.android.SpoonacularAPIClient;
+
+import com.loopj.android.http.*;
+import org.json.*;
 
 public class DinnerModel implements IDinnerModel{
 
@@ -22,8 +31,20 @@ public class DinnerModel implements IDinnerModel{
 	 * The constructor of the overall model. Set the default values here
 	 */
 	public DinnerModel(){
-		
-		//Adding some example data, you can add more
+
+        SpoonacularAPIClient.get("recipes/search", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println(response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                System.out.println(responseString);
+            }
+        });
+
+        //Adding some example data, you can add more
 		Dish dish1 = new Dish(R.drawable.toast, "French toast",Dish.STARTER,"toast.jpg","In a large mixing bowl, beat the eggs. Add the milk, brown sugar and nutmeg; stir well to combine. Soak bread slices in the egg mixture until saturated. Heat a lightly oiled griddle or frying pan over medium high heat. Brown slices on both sides, sprinkle with cinnamon and serve hot.");
 		Ingredient dish1ing1 = new Ingredient("eggs",0.5,"",1);
 		Ingredient dish1ing2 = new Ingredient("milk",30,"ml",6);

@@ -28,7 +28,7 @@ import se.kth.csc.iprog.dinnerplanner.model.Ingredient;
 public class OverviewActivity extends Activity {
 
     DinnerModel model;
-    String cost;
+    int cost;
     int participants;
 
     View marked;
@@ -39,7 +39,7 @@ public class OverviewActivity extends Activity {
         setContentView(R.layout.overview_view);
         model = ((DinnerPlannerApplication) this.getApplication()).getModel();
 
-        cost = "" + model.getTotalMenuPrice();
+        cost = (int) model.getTotalMenuPrice();
         participants = model.getNumberOfGuests();
 
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -75,7 +75,7 @@ public class OverviewActivity extends Activity {
         overview.setLayoutManager(linearLayoutManager);
 
         TextView costText = (TextView) findViewById(R.id.total_cost);
-        costText.setText(cost);
+        costText.setText("" + cost * participants);
 
         showAllIngredients(allIngredients);
 

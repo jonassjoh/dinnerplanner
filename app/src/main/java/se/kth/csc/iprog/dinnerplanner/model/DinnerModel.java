@@ -2,17 +2,16 @@ package se.kth.csc.iprog.dinnerplanner.model;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import cz.msebera.android.httpclient.Header;
 import se.kth.csc.iprog.dinnerplanner.android.R;
 import se.kth.csc.iprog.dinnerplanner.android.SpoonacularAPIClient;
-
-import com.loopj.android.http.*;
-import org.json.*;
 
 public class DinnerModel implements IDinnerModel{
 
@@ -32,17 +31,37 @@ public class DinnerModel implements IDinnerModel{
 	 */
 	public DinnerModel(){
 
-        SpoonacularAPIClient.get("recipes/search", null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                System.out.println(response.toString());
-            }
+		try {
+			SpoonacularAPIClient.get("recipes/search", null, new JsonHttpResponseHandler() {
+				@Override
+				public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    System.out.println("> " + response);
+                    try {
+                        String imgBase = response.getString("baseUri");
+                        JSONArray arr = response.getJSONArray("results");
+                        for (int i=0; i<arr.length(); i++) {
+                            JSONObject obj = arr.getJSONObject( i );
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                System.out.println(responseString);
-            }
-        });
+                            Dish dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.STARTER, imgBase+obj.get("image"), "intructions here");
+                            dishes.add(dish);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    System.out.println(errorResponse);
+                }
+            });
+		}catch (Exception e) {
+
+		}
+
+        /*
 
         //Adding some example data, you can add more
 		Dish dish1 = new Dish(R.drawable.toast, "French toast",Dish.STARTER,"toast.jpg","In a large mixing bowl, beat the eggs. Add the milk, brown sugar and nutmeg; stir well to combine. Soak bread slices in the egg mixture until saturated. Heat a lightly oiled griddle or frying pan over medium high heat. Brown slices on both sides, sprinkle with cinnamon and serve hot.");
@@ -101,7 +120,7 @@ public class DinnerModel implements IDinnerModel{
 		dish2.addIngredient(dish2ing10);
 		dish2.addIngredient(dish2ing11);
 		dishes.add(dish2);
-		
+		*/
 	}
 
 	private Dish makeDish(String s, int t) {

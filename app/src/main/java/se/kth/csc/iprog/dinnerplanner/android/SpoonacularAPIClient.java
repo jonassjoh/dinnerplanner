@@ -9,7 +9,7 @@ public class SpoonacularAPIClient {
     private static AsyncHttpClient client = new AsyncHttpClient();
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        client.addHeader("mashape-key",API_KEY);
+        client.addHeader("X-Mashape-Key",API_KEY);
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 

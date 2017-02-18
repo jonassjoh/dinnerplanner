@@ -94,6 +94,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     protected void onClickImage(final ViewHolder holder, final Dish dish) {
         if(!holder.dish.selected) {
 
+
+
             final Dialog dialog = new Dialog(activity);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.chose_menu_dialog);
@@ -102,28 +104,39 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
             final DinnerModel model = ((DinnerPlannerApplication) activity.getApplication()).getModel();
 
-            //final int participants = s.getSelectedItemPosition() + 1;
-            final int participants = model.getNumberOfGuests();
-
-            ((TextView) dialog.findViewById(R.id.item_title)).setText(
-                    "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
-            );
-            ((ImageView) dialog.findViewById(R.id.item_image)).setImageResource( dish.getImageId() );
-
-            dialog.findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
+            model.getIngredients(dish, new AsyncData() {
                 @Override
-                public void onClick(View view) {
-                    // Mark item
-                    holder.item.setBackgroundColor(Color.parseColor("#ff574a"));
-                    holder.getTextView().setTextColor(Color.parseColor("#ffffff"));
-                    holder.dish.selected = true;
-                    TextView t = (TextView) activity.findViewById(R.id.cost);
+                public void onData() {
+                    TextView setBoxTitle = (TextView) dialog.findViewById(R.id.title);
+                    setBoxTitle.setText(dish.getName());
+                    model.getInstructions(dish, new AsyncData() {
+                        @Override
+                        public void onData() {
+                            //final int participants = s.getSelectedItemPosition() + 1;
+                            final int participants = model.getNumberOfGuests();
 
-                    t.setText( "" + (model.getTotalMenuPrice() * model.getNumberOfGuests()) + "kr" );
-                    dialog.dismiss();
+                            ((TextView) dialog.findViewById(R.id.item_title)).setText(
+                                    "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
+                            );
+                            ((ImageView) dialog.findViewById(R.id.item_image)).setImageResource( dish.getImageId() );
+
+                            dialog.findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    // Mark item
+                                    holder.item.setBackgroundColor(Color.parseColor("#ff574a"));
+                                    holder.getTextView().setTextColor(Color.parseColor("#ffffff"));
+                                    holder.dish.selected = true;
+                                    TextView t = (TextView) activity.findViewById(R.id.cost);
+
+                                    t.setText( "" + (model.getTotalMenuPrice() * model.getNumberOfGuests()) + "kr" );
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    });
                 }
             });
-
             dialog.show();
         }
         else {

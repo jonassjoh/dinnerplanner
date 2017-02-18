@@ -5,7 +5,8 @@
     android:padding="@dimen/activity_vertical_margin">
 
     <TextView
-        android:text="Toast"
+        android:text="Title"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"

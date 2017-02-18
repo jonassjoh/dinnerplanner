@@ -15,15 +15,17 @@ public class Dish {
 	int imageId;
 	String description;
 	public boolean selected = false;
+	String id;
 	
 	Set<Ingredient> ingredients = new HashSet<Ingredient>();
 	
-	public Dish(int imageId, String name, int type, String image, String description) {
+	public Dish(int imageId, String name, int type, String image, String description, String id) {
 		this.name = name;
 		this.type = type;
 		this.image = image;
 		this.imageId = imageId;
 		this.description = description;
+		this.id = id;
 	}
 
 	public String getTypeName() {
@@ -94,4 +96,8 @@ public class Dish {
 	public int getImageId() {
 		return imageId;
 	}
+
+    public String getId(){
+        return this.id;
+    }
 }

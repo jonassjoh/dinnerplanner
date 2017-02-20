@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
 
@@ -65,19 +68,18 @@ public class MenuActivity extends Activity {
         mainCourses.setLayoutManager(linearLayoutManager2);
         desserts.setLayoutManager(linearLayoutManager3);
 
-        final MenuAdapter startersAdapter = new MenuAdapter(this, getStarters());
-        MenuAdapter mainCoursesAdapter = new MenuAdapter(this, getMainCourses());
-        MenuAdapter desertsAdapter = new MenuAdapter(this, getDeserts());
+        final MenuAdapter startersAdapter = new MenuAdapter(this, get());
+        MenuAdapter mainCoursesAdapter = new MenuAdapter(this, get());
+        MenuAdapter desertsAdapter = new MenuAdapter(this, get());
         starters.setAdapter(startersAdapter);
         mainCourses.setAdapter(mainCoursesAdapter);
         desserts.setAdapter(desertsAdapter);
 
+        model.setAdapters(startersAdapter, mainCoursesAdapter, desertsAdapter);
+
         model.helpSearchDish(new AsyncData() {
             @Override
             public void onData() {
-                starters.getAdapter().notifyDataSetChanged();
-                mainCourses.getAdapter().notifyDataSetChanged();
-                desserts.getAdapter().notifyDataSetChanged();
             }
         });
 
@@ -89,6 +91,11 @@ public class MenuActivity extends Activity {
                 startActivity(intent);
             }
         });
+    }
+
+    private Object[] get() {
+        Set<Dish> result = new HashSet<Dish>();
+        return result.toArray();
     }
 
     private Object[] getStarters() {

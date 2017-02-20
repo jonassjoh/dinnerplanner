@@ -69,6 +69,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         this.activity = activity;
     }
 
+    public void add(Dish a) {
+        Object[] b = new Object[dataset.length + 1];
+        for(int i=0; i<dataset.length; i++)
+            b[i]=dataset[i];
+        b[dataset.length] = a;
+        dataset = b;
+        notifyDataSetChanged();
+    }
+
     public MenuAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(v);
@@ -83,7 +92,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         final Dish dish = (Dish) dataset[position];
         holder.dish = dish;
         holder.getTextView().setText( dish.getName() );
-        holder.getImageView().setImageBitmap(Bitmap.createScaledBitmap(dish.getBitMap(), 300, 300, false));;
+        holder.getImageView().setImageBitmap( dish.getBitMap() );
 
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,11 +115,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
             final DinnerModel model = ((DinnerPlannerApplication) activity.getApplication()).getModel();
 
+            TextView setBoxTitle = (TextView) dialog.findViewById(R.id.title);
+            setBoxTitle.setText(dish.getName());
+
             model.getIngredients(dish, new AsyncData() {
                 @Override
                 public void onData() {
-                    TextView setBoxTitle = (TextView) dialog.findViewById(R.id.title);
-                    setBoxTitle.setText(dish.getName());
                     model.getInstructions(dish, new AsyncData() {
                         @Override
                         public void onData() {
@@ -120,7 +130,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                             ((TextView) dialog.findViewById(R.id.item_title)).setText(
                                     "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
                             );
-                            ((ImageView) dialog.findViewById(R.id.item_image)).setImageResource( dish.getImageId() );
+                            ((ImageView) dialog.findViewById(R.id.item_image)).setImageBitmap( dish.getBitMap() );
 
                             dialog.findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
                                 @Override

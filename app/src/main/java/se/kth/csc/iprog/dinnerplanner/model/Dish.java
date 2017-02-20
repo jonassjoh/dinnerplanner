@@ -110,6 +110,6 @@ public class Dish {
 	}
 
 	public Bitmap getBitMap(){
-		return this.bitmap;
+		return Bitmap.createScaledBitmap(this.bitmap, 250, 250, false);
 	}
 }

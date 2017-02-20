@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.ImageView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
 import se.kth.csc.iprog.dinnerplanner.android.AsyncData;
+import se.kth.csc.iprog.dinnerplanner.android.MenuAdapter;
 import se.kth.csc.iprog.dinnerplanner.android.R;
 import se.kth.csc.iprog.dinnerplanner.android.SpoonacularAPIClient;
 
@@ -299,7 +301,9 @@ public class DinnerModel implements IDinnerModel{
             Bitmap mIcon11 = null;
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 8;
+                mIcon11 = BitmapFactory.decodeStream(in,null,options);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
@@ -310,6 +314,11 @@ public class DinnerModel implements IDinnerModel{
         protected void onPostExecute(Bitmap result) {
             dish.setBitMap(result);
             dishes.add(dish);
+
+            if(dish.getType() == Dish.STARTER && a != null) a.add(dish);
+            if(dish.getType() == Dish.MAIN && b != null) b.add(dish);
+            if(dish.getType() == Dish.DESERT && c != null) c.add(dish);
+
             data.onData();
         }
     }
@@ -330,13 +339,13 @@ public class DinnerModel implements IDinnerModel{
                             Dish dish = null;
 
                             if(type=="appetizer"){
-                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.STARTER, imgBase+obj.get("image"), "intructions here", obj.getString("id"));
+                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.STARTER, imgBase+obj.get("image"), "", obj.getString("id"));
                             }
                             else if(type=="main course"){
-                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.MAIN, imgBase+obj.get("image"), "intructions here", obj.getString("id"));
+                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.MAIN, imgBase+obj.get("image"), "", obj.getString("id"));
                             }
                             else if(type=="dessert"){
-                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.DESERT, imgBase+obj.get("image"), "intructions here", obj.getString("id"));
+                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.DESERT, imgBase+obj.get("image"), "", obj.getString("id"));
                             }
                             new DownloadImageTask(dish, data)
                                     .execute(dish.getImage());
@@ -376,4 +385,10 @@ public class DinnerModel implements IDinnerModel{
         });
     }
 
+    MenuAdapter a,b,c;
+    public void setAdapters(MenuAdapter a, MenuAdapter b, MenuAdapter c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
 }

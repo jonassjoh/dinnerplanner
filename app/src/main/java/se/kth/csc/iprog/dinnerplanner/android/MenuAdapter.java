@@ -2,6 +2,8 @@ package se.kth.csc.iprog.dinnerplanner.android;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -81,7 +83,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         final Dish dish = (Dish) dataset[position];
         holder.dish = dish;
         holder.getTextView().setText( dish.getName() );
-        holder.getImageView().setImageResource( dish.getImageId() );
+        holder.getImageView().setImageBitmap(Bitmap.createScaledBitmap(dish.getBitMap(), 300, 300, false));;
 
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override

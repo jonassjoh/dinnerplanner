@@ -1,11 +1,18 @@
 package se.kth.csc.iprog.dinnerplanner.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.ImageView;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,36 +39,6 @@ public class DinnerModel implements IDinnerModel{
 	 * The constructor of the overall model. Set the default values here
 	 */
 	public DinnerModel(){
-
-		try {
-			SpoonacularAPIClient.get("recipes/search", null, new JsonHttpResponseHandler() {
-				@Override
-				public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
-                    System.out.println("> " + response);
-                    try {
-                        String imgBase = response.getString("baseUri");
-                        JSONArray arr = response.getJSONArray("results");
-                        for (int i=0; i<arr.length(); i++) {
-                            JSONObject obj = arr.getJSONObject( i );
-
-                            Dish dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.STARTER, imgBase+obj.get("image"), "intructions here", obj.getString("id"));
-                            dishes.add(dish);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    System.out.println(errorResponse);
-                }
-            });
-		}catch (Exception e) {
-
-		}
 
         /*
 
@@ -306,6 +283,97 @@ public class DinnerModel implements IDinnerModel{
         }catch (Exception e) {
 
         }
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        Dish dish;
+        AsyncData data;
+
+        public DownloadImageTask(Dish dish, AsyncData data) {
+            this.dish = dish;
+            this.data = data;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            dish.setBitMap(result);
+            dishes.add(dish);
+            data.onData();
+        }
+    }
+
+    public void searchDish(final String type, final AsyncData data){
+        try {
+            SpoonacularAPIClient.get("recipes/search?type="+type, null, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    System.out.println("> " + response);
+                    try {
+                        String imgBase = response.getString("baseUri");
+                        JSONArray arr = response.getJSONArray("results");
+                        for (int i=0; i<arr.length(); i++) {
+                            JSONObject obj = arr.getJSONObject( i );
+
+                            Dish dish = null;
+
+                            if(type=="appetizer"){
+                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.STARTER, imgBase+obj.get("image"), "intructions here", obj.getString("id"));
+                            }
+                            else if(type=="main course"){
+                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.MAIN, imgBase+obj.get("image"), "intructions here", obj.getString("id"));
+                            }
+                            else if(type=="dessert"){
+                                dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.DESERT, imgBase+obj.get("image"), "intructions here", obj.getString("id"));
+                            }
+                            new DownloadImageTask(dish, data)
+                                    .execute(dish.getImage());
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    System.out.println(errorResponse);
+                }
+            });
+        }catch (Exception e) {
+
+        }
+    }
+
+    public void helpSearchDish(final AsyncData data){
+        searchDish("appetizer", new AsyncData() {
+            @Override
+            public void onData() {
+                searchDish("main course", new AsyncData() {
+                    @Override
+                    public void onData() {
+                        searchDish("dessert", new AsyncData() {
+                            @Override
+                            public void onData() {
+                                data.onData();
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
 }

@@ -54,9 +54,9 @@ public class MenuActivity extends Activity {
             }
         });
 
-        RecyclerView starters = (RecyclerView) findViewById(R.id.starters);
-        RecyclerView mainCourses = (RecyclerView) findViewById(R.id.main_courses);
-        RecyclerView desserts = (RecyclerView) findViewById(R.id.desserts);
+        final RecyclerView starters = (RecyclerView) findViewById(R.id.starters);
+        final RecyclerView mainCourses = (RecyclerView) findViewById(R.id.main_courses);
+        final RecyclerView desserts = (RecyclerView) findViewById(R.id.desserts);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -65,12 +65,21 @@ public class MenuActivity extends Activity {
         mainCourses.setLayoutManager(linearLayoutManager2);
         desserts.setLayoutManager(linearLayoutManager3);
 
-        MenuAdapter startersAdapter = new MenuAdapter(this, getStarters());
+        final MenuAdapter startersAdapter = new MenuAdapter(this, getStarters());
         MenuAdapter mainCoursesAdapter = new MenuAdapter(this, getMainCourses());
         MenuAdapter desertsAdapter = new MenuAdapter(this, getDeserts());
         starters.setAdapter(startersAdapter);
         mainCourses.setAdapter(mainCoursesAdapter);
         desserts.setAdapter(desertsAdapter);
+
+        model.helpSearchDish(new AsyncData() {
+            @Override
+            public void onData() {
+                starters.getAdapter().notifyDataSetChanged();
+                mainCourses.getAdapter().notifyDataSetChanged();
+                desserts.getAdapter().notifyDataSetChanged();
+            }
+        });
 
         Button create = (Button) findViewById(R.id.create_button);
         create.setOnClickListener(new View.OnClickListener() {

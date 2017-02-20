@@ -1,5 +1,7 @@
 package se.kth.csc.iprog.dinnerplanner.model;
 
+import android.graphics.Bitmap;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ public class Dish {
 	String description;
 	public boolean selected = false;
 	String id;
+	Bitmap bitmap;
 	
 	Set<Ingredient> ingredients = new HashSet<Ingredient>();
 	
@@ -26,6 +29,7 @@ public class Dish {
 		this.imageId = imageId;
 		this.description = description;
 		this.id = id;
+
 	}
 
 	public String getTypeName() {
@@ -100,4 +104,12 @@ public class Dish {
     public String getId(){
         return this.id;
     }
+
+	public void setBitMap(Bitmap result){
+		this.bitmap = result;
+	}
+
+	public Bitmap getBitMap(){
+		return this.bitmap;
+	}
 }

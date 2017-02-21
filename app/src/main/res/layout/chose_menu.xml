@@ -62,17 +62,16 @@
             />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/searchbar"/>
+            android:id="@+id/searchbar"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/searchResult"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <EditText android:imeOptions="actionSearch"
-            android:id="@+id/search"/>
 
         <TextView
             android:text="@string/starter"

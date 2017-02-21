@@ -91,20 +91,6 @@ public class MenuActivity extends Activity {
 
         model.setAdapters(startersAdapter, mainCoursesAdapter, desertsAdapter, resultAdapter);
 
-
-        final EditText search = (EditText) findViewById(R.id.search);
-
-        search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    model.helpSearchDish(event);
-                    return true;
-                }
-                return false;
-            }
-        });
-
         EditText searchBar = (EditText)findViewById(R.id.searchbar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -114,13 +100,14 @@ public class MenuActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                model.helpSearchDish(new AsyncData() {
+                resultAdapter.reset();
+                model.searchDish("", new AsyncData() {
                     @Override
                     public void onData() {
 
                     }
                 }, charSequence.toString());
-                System.out.print(charSequence+" , THIS AINT A MOTHERFUKKIN JOKE BIATCH");
+                System.out.println(charSequence+" , THIS AINT A MOTHERFUKKIN JOKE BIATCH");
             }
 
             @Override

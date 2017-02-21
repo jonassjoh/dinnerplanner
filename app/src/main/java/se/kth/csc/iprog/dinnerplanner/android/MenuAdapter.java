@@ -173,4 +173,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     public int getItemCount() {
         return dataset.length;
     }
+
+    public void reset() {
+        dataset = get();
+    }
+
+    private Object[] get() {
+        Set<Dish> result = new HashSet<Dish>();
+        return result.toArray();
+    }
 }

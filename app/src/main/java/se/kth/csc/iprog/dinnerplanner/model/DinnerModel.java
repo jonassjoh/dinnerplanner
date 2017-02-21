@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.Menu;
-import android.widget.ImageView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -14,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -318,14 +315,15 @@ public class DinnerModel implements IDinnerModel{
             if(dish.getType() == Dish.STARTER && a != null) a.add(dish);
             if(dish.getType() == Dish.MAIN && b != null) b.add(dish);
             if(dish.getType() == Dish.DESERT && c != null) c.add(dish);
+            if(dish.getType() == -1 && d != null) d.add(dish);
 
             data.onData();
         }
     }
 
-    public void searchDish(final String type, final AsyncData data){
+    public void searchDish(final String type, final AsyncData data, final String query){
         try {
-            SpoonacularAPIClient.get("recipes/search?type="+type, null, new JsonHttpResponseHandler() {
+            SpoonacularAPIClient.get("recipes/search?type="+type+"&number=10"+"&query="+query, null, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
@@ -347,6 +345,9 @@ public class DinnerModel implements IDinnerModel{
                             else if(type=="dessert"){
                                 dish = new Dish(R.drawable.toast, obj.getString("title"), Dish.DESERT, imgBase+obj.get("image"), "", obj.getString("id"));
                             }
+                            else{
+                                dish = new Dish(R.drawable.toast, obj.getString("title"), -1 , imgBase+obj.get("image"), "", obj.getString("id"));
+                            }
                             new DownloadImageTask(dish, data)
                                     .execute(dish.getImage());
                         }
@@ -366,29 +367,40 @@ public class DinnerModel implements IDinnerModel{
         }
     }
 
-    public void helpSearchDish(final AsyncData data){
+    public void helpSearchDish(final AsyncData data, final String query){
         searchDish("appetizer", new AsyncData() {
             @Override
             public void onData() {
-                searchDish("main course", new AsyncData() {
-                    @Override
-                    public void onData() {
-                        searchDish("dessert", new AsyncData() {
-                            @Override
-                            public void onData() {
-                                data.onData();
-                            }
-                        });
-                    }
-                });
             }
-        });
+        }, "");
+        searchDish("main course", new AsyncData() {
+            @Override
+            public void onData() {
+            }
+        }, "");
+        searchDish("dessert", new AsyncData() {
+            @Override
+            public void onData() {
+                data.onData();
+            }
+        }, "");
+        searchDish("", new AsyncData() {
+            @Override
+            public void onData() {
+                data.onData();
+            }
+        }, query);
     }
 
-    MenuAdapter a,b,c;
-    public void setAdapters(MenuAdapter a, MenuAdapter b, MenuAdapter c) {
+    MenuAdapter a,b,c,d;
+    public void setAdapters(MenuAdapter a, MenuAdapter b, MenuAdapter c, MenuAdapter d) {
         this.a = a;
         this.b = b;
         this.c = c;
+        this.d = d;
+    }
+
+    public void reset(){
+        this.dishes.clear();
     }
 }

@@ -71,10 +71,17 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     public void add(Dish a) {
         Object[] b = new Object[dataset.length + 1];
-        for(int i=0; i<dataset.length; i++)
-            b[i]=dataset[i];
+        for (int i = 0; i < dataset.length; i++)
+            b[i] = dataset[i];
         b[dataset.length] = a;
         dataset = b;
+        if (a.getType() == 1) {
+            activity.findViewById(R.id.progressbar1).setVisibility(View.GONE);
+        } else if (a.getType() == 2) {
+            activity.findViewById(R.id.progressbar2).setVisibility(View.GONE);
+        } else if (a.getType() == 3) {
+            activity.findViewById(R.id.progressbar3).setVisibility(View.GONE);
+        }
         notifyDataSetChanged();
     }
 
@@ -117,6 +124,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
             TextView setBoxTitle = (TextView) dialog.findViewById(R.id.title);
             setBoxTitle.setText(dish.getName());
+            ((ImageView) dialog.findViewById(R.id.item_image)).setImageBitmap( dish.getBitMap() );
+            dialog.findViewById(R.id.item_title).setVisibility(View.GONE);
 
             model.getIngredients(dish, new AsyncData() {
                 @Override
@@ -126,11 +135,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                         public void onData() {
                             //final int participants = s.getSelectedItemPosition() + 1;
                             final int participants = model.getNumberOfGuests();
-
+                            dialog.findViewById(R.id.item_title).setVisibility(View.VISIBLE);
+                            dialog.findViewById(R.id.progressbar4).setVisibility(View.GONE);
                             ((TextView) dialog.findViewById(R.id.item_title)).setText(
                                     "Cost: "+(participants * dish.getCost())+"kr\n("+dish.getCost()+"kr / person)"
                             );
-                            ((ImageView) dialog.findViewById(R.id.item_image)).setImageBitmap( dish.getBitMap() );
 
                             dialog.findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
                                 @Override

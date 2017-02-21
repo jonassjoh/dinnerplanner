@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -32,6 +37,8 @@ public class MenuActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         model = ((DinnerPlannerApplication) this.getApplication()).getModel();
+
+        model.reset();
 
         setContentView(R.layout.chose_menu);
 
@@ -60,28 +67,73 @@ public class MenuActivity extends Activity {
         final RecyclerView starters = (RecyclerView) findViewById(R.id.starters);
         final RecyclerView mainCourses = (RecyclerView) findViewById(R.id.main_courses);
         final RecyclerView desserts = (RecyclerView) findViewById(R.id.desserts);
+        final RecyclerView searchResult = (RecyclerView) findViewById(R.id.searchResult);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager linearLayoutManager4 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
         starters.setLayoutManager(linearLayoutManager);
         mainCourses.setLayoutManager(linearLayoutManager2);
         desserts.setLayoutManager(linearLayoutManager3);
+        searchResult.setLayoutManager(linearLayoutManager4);
 
         final MenuAdapter startersAdapter = new MenuAdapter(this, get());
-        MenuAdapter mainCoursesAdapter = new MenuAdapter(this, get());
-        MenuAdapter desertsAdapter = new MenuAdapter(this, get());
+        final MenuAdapter mainCoursesAdapter = new MenuAdapter(this, get());
+        final MenuAdapter desertsAdapter = new MenuAdapter(this, get());
+        final MenuAdapter resultAdapter = new MenuAdapter(this, get());
+
         starters.setAdapter(startersAdapter);
         mainCourses.setAdapter(mainCoursesAdapter);
         desserts.setAdapter(desertsAdapter);
+        searchResult.setAdapter(resultAdapter);
 
-        model.setAdapters(startersAdapter, mainCoursesAdapter, desertsAdapter);
+        model.setAdapters(startersAdapter, mainCoursesAdapter, desertsAdapter, resultAdapter);
+
+
+        final EditText search = (EditText) findViewById(R.id.search);
+
+        search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    model.helpSearchDish(event);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        EditText searchBar = (EditText)findViewById(R.id.searchbar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                model.helpSearchDish(new AsyncData() {
+                    @Override
+                    public void onData() {
+
+                    }
+                }, charSequence.toString());
+                System.out.print(charSequence+" , THIS AINT A MOTHERFUKKIN JOKE BIATCH");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         model.helpSearchDish(new AsyncData() {
             @Override
             public void onData() {
             }
-        });
+        }, "");
 
         Button create = (Button) findViewById(R.id.create_button);
         create.setOnClickListener(new View.OnClickListener() {
@@ -107,4 +159,5 @@ public class MenuActivity extends Activity {
     private Object[] getDeserts() {
         return model.getDishesOfType(Dish.DESERT).toArray();
     }
+
 }

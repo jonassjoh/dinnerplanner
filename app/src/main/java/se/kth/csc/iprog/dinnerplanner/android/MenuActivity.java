@@ -104,10 +104,8 @@ public class MenuActivity extends Activity {
                 model.searchDish("", new AsyncData() {
                     @Override
                     public void onData() {
-
                     }
                 }, charSequence.toString());
-                System.out.println(charSequence+" , THIS AINT A MOTHERFUKKIN JOKE BIATCH");
             }
 
             @Override

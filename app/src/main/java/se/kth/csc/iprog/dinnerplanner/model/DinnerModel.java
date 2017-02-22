@@ -1,9 +1,15 @@
 package se.kth.csc.iprog.dinnerplanner.model;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -17,6 +23,7 @@ import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
 import se.kth.csc.iprog.dinnerplanner.android.AsyncData;
+import se.kth.csc.iprog.dinnerplanner.android.DinnerPlannerApplication;
 import se.kth.csc.iprog.dinnerplanner.android.MenuAdapter;
 import se.kth.csc.iprog.dinnerplanner.android.R;
 import se.kth.csc.iprog.dinnerplanner.android.SpoonacularAPIClient;
@@ -329,7 +336,9 @@ public class DinnerModel implements IDinnerModel{
                     super.onSuccess(statusCode, headers, response);
                     System.out.println("> " + response);
                     try {
+                        System.out.println(1);
                         String imgBase = response.getString("baseUri");
+                        System.out.println(2);
                         JSONArray arr = response.getJSONArray("results");
                         for (int i=0; i<arr.length(); i++) {
                             JSONObject obj = arr.getJSONObject( i );
@@ -352,6 +361,8 @@ public class DinnerModel implements IDinnerModel{
                                     .execute(dish.getImage());
                         }
                     } catch (JSONException e) {
+                        System.out.println("aosidhoaisdhasidoiasbdoisabodibaosidboiasbdoiasbdoiabsodibasoidbasdasd213123123");
+                        System.out.println("Why am I not showing?");
                         e.printStackTrace();
                     }
                 }
@@ -359,37 +370,50 @@ public class DinnerModel implements IDinnerModel{
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
-                    System.out.println(errorResponse);
+
+                    data.onError();
                 }
             });
         }catch (Exception e) {
-
+            e.printStackTrace(  );
         }
     }
 
     public void helpSearchDish(final AsyncData data, final String query){
-        searchDish("appetizer", new AsyncData() {
+
+        AsyncData d = new AsyncData() {
+            boolean showedError = false;
             @Override
             public void onData() {
             }
-        }, "");
-        searchDish("main course", new AsyncData() {
+
             @Override
-            public void onData() {
+            public void onError() {
+                if(showedError) return;
+                showedError = true;
+                //Dish dish1 = new Dish(R.drawable.toast, "French toast",Dish.STARTER,"toast.jpg","ERROR", "-1");
+                //a.add(dish1);
+                final Dialog dialog = new Dialog(a.activity);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.chose_menu_dialog);
+
+                Spinner s = (Spinner) a.activity.findViewById(R.id.participants);
+
+                TextView setBoxTitle = (TextView) dialog.findViewById(R.id.title);
+                setBoxTitle.setText("ERROR");
+                ((ImageView) dialog.findViewById(R.id.item_image)).setVisibility(View.GONE);
+                ((TextView) dialog.findViewById(R.id.item_title)).setText("Try again");
+                dialog.findViewById(R.id.progressbar4).setVisibility(View.GONE);
+                dialog.findViewById(R.id.choose_button).setVisibility(View.GONE);
+
+                dialog.show();
             }
-        }, "");
-        searchDish("dessert", new AsyncData() {
-            @Override
-            public void onData() {
-                data.onData();
-            }
-        }, "");
-        searchDish("", new AsyncData() {
-            @Override
-            public void onData() {
-                data.onData();
-            }
-        }, query);
+        };
+
+        searchDish("appetizer", d, "");
+        searchDish("main course", d, "");
+        searchDish("dessert", d, "");
+        searchDish("", d, query);
     }
 
     MenuAdapter a,b,c,d;

@@ -29,7 +29,7 @@ import se.kth.csc.iprog.dinnerplanner.model.Dish;
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     private Object[] dataset;
-    private Activity activity;
+    public Activity activity;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout item;
@@ -155,7 +155,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                                 }
                             });
                         }
+
+                        @Override
+                        public void onError() {
+                        }
                     });
+                }
+
+                @Override
+                public void onError() {
                 }
             });
             dialog.show();

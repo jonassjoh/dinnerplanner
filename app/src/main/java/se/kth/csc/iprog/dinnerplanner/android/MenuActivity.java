@@ -105,6 +105,11 @@ public class MenuActivity extends Activity {
                     @Override
                     public void onData() {
                     }
+
+                    @Override
+                    public void onError() {
+
+                    }
                 }, charSequence.toString());
             }
 
@@ -117,6 +122,10 @@ public class MenuActivity extends Activity {
         model.helpSearchDish(new AsyncData() {
             @Override
             public void onData() {
+            }
+
+            @Override
+            public void onError() {
             }
         }, "");
 
